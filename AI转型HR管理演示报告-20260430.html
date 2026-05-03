@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI转型 · HR人力管理目标情况</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg-dark: #050a14;
+  --bg-card: #0d1726;
+  --bg-card2: #111d30;
+  --accent: #3b82f6;
+  --accent2: #06b6d4;
+  --accent3: #10b981;
+  --accent4: #f59e0b;
+  --accent5: #ef4444;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: rgba(59,130,246,0.18);
+  --border-light: rgba(255,255,255,0.06);
+  --glow: rgba(59,130,246,0.25);
+  --title-size: clamp(1.6rem, 4.5vw, 3.8rem);
+  --h2-size: clamp(1.2rem, 3vw, 2.2rem);
+  --h3-size: clamp(0.95rem, 2vw, 1.4rem);
+  --body-size: clamp(0.72rem, 1.3vw, 1rem);
+  --small-size: clamp(0.62rem, 0.9vw, 0.82rem);
+  --slide-padding: clamp(1.2rem, 4vw, 3.5rem);
+  --content-gap: clamp(0.6rem, 1.5vw, 1.4rem);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow-x: hidden; font-family: 'Manrope', 'Noto Sans SC', sans-serif; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+.slide {
+  width: 100vw; height: 100vh; height: 100dvh; overflow: hidden;
+  scroll-snap-align: start; display: flex; flex-direction: column;
+  position: relative; background: var(--bg-dark);
+}
+.slide-content {
+  flex: 1; display: flex; flex-direction: column; justify-content: center;
+  max-height: 100%; overflow: hidden; padding: var(--slide-padding);
+  position: relative; z-index: 2;
+}
+.grid-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.glow-orb { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; }
+.glow-orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%); top: -10%; right: -5%; }
+.glow-orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%); bottom: -10%; left: -5%; }
+.glow-orb-3 { width: 350px; height: 350px; background: radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%); top: 30%; left: 30%; }
+h1 { font-size: var(--title-size); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
+h2 { font-size: var(--h2-size); font-weight: 700; line-height: 1.2; }
+h3 { font-size: var(--h3-size); font-weight: 600; }
+p, li { font-size: var(--body-size); line-height: 1.55; }
+small { font-size: var(--small-size); }
+.gradient-text {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4, #10b981);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 20px; font-size: var(--small-size);
+  font-weight: 600; letter-spacing: 0.03em; border: 1px solid;
+}
+.badge-blue { background: rgba(59,130,246,0.12); color: #60a5fa; border-color: rgba(59,130,246,0.3); }
+.badge-cyan { background: rgba(6,182,212,0.12); color: #22d3ee; border-color: rgba(6,182,212,0.3); }
+.badge-green { background: rgba(16,185,129,0.12); color: #34d399; border-color: rgba(16,185,129,0.3); }
+.badge-amber { background: rgba(245,158,11,0.12); color: #fbbf24; border-color: rgba(245,158,11,0.3); }
+.badge-red { background: rgba(239,68,68,0.12); color: #f87171; border-color: rgba(239,68,68,0.3); }
+.badge-purple { background: rgba(168,85,247,0.12); color: #c084fc; border-color: rgba(168,85,247,0.3); }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: clamp(0.5rem, 1.2vw, 1rem); max-height: min(72vh, 580px); }
+.kpi-card {
+  background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 14px;
+  padding: clamp(0.8rem, 1.5vw, 1.4rem); display: flex; flex-direction: column; gap: 6px;
+  position: relative; overflow: hidden; transition: border-color 0.3s;
+}
+.kpi-card:hover { border-color: rgba(59,130,246,0.4); }
+.kpi-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--kpi-color, var(--accent)); opacity: 0.6; }
+.kpi-icon { font-size: clamp(1.2rem, 2vw, 1.8rem); }
+.kpi-label { font-size: var(--small-size); color: var(--text-secondary); font-weight: 500; }
+.kpi-value { font-size: clamp(1.4rem, 2.8vw, 2.4rem); font-weight: 800; color: var(--text-primary); line-height: 1; }
+.kpi-sub { font-size: var(--small-size); color: var(--text-muted); }
+.kpi-green { color: #34d399; }
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: clamp(0.8rem, 1.5vw, 1.4rem); }
+.section-num {
+  width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; color: white; flex-shrink: 0;
+}
+.section-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(59,130,246,0.4), transparent); }
+.progress-row { display: grid; grid-template-columns: 100px 1fr 60px; gap: 10px; align-items: center; margin-bottom: 8px; }
+.progress-label { font-size: var(--small-size); color: var(--text-secondary); text-align: right; }
+.progress-bar-bg { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.06); overflow: hidden; position: relative; }
+.progress-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 1s ease; }
+.progress-val { font-size: var(--small-size); color: var(--text-primary); font-weight: 700; text-align: center; }
+.data-table { width: 100%; border-collapse: collapse; font-size: var(--small-size); }
+.data-table th { background: rgba(59,130,246,0.1); color: var(--accent2); padding: 8px 10px; text-align: center; font-weight: 600; border-bottom: 1px solid var(--border); }
+.data-table td { padding: 7px 10px; text-align: center; color: var(--text-secondary); border-bottom: 1px solid var(--border-light); }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr.total-row td { color: var(--text-primary); font-weight: 700; background: rgba(59,130,246,0.06); }
+.data-table td.highlight { color: #60a5fa; font-weight: 700; }
+.data-table td.green { color: #34d399; font-weight: 700; }
+.chart-wrap { position: relative; max-height: min(30vh, 240px); flex: 1; }
+.chart-wrap canvas { max-height: min(30vh, 240px) !important; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(0.8rem, 1.5vw, 1.4rem); max-height: min(78vh, 640px); }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: clamp(0.6rem, 1.2vw, 1rem); }
+.cost-card {
+  background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 14px;
+  padding: clamp(0.8rem, 1.5vw, 1.2rem); text-align: center; position: relative; overflow: hidden;
+}
+.cost-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--c-color, var(--accent)); }
+.cost-milestone { font-size: var(--small-size); color: var(--text-muted); margin-bottom: 4px; }
+.cost-big { font-size: clamp(1.4rem, 2.8vw, 2.4rem); font-weight: 800; color: var(--text-primary); line-height: 1; }
+.cost-unit { font-size: var(--small-size); color: var(--text-secondary); margin-top: 2px; }
+.cost-sub-row { display: flex; justify-content: center; gap: 12px; margin-top: 8px; }
+.cost-sub-item { text-align: center; }
+.cost-sub-val { font-size: clamp(0.75rem, 1.2vw, 1rem); font-weight: 700; color: var(--accent3); }
+.cost-sub-label { font-size: var(--small-size); color: var(--text-muted); }
+.roi-inline { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+.roi-item { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; padding: 8px 12px; text-align: center; }
+.roi-item-label { font-size: var(--small-size); color: var(--text-muted); }
+.roi-item-val { font-size: clamp(0.9rem, 1.5vw, 1.2rem); font-weight: 800; color: #34d399; }
+.insight-card {
+  background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 12px;
+  padding: clamp(0.7rem, 1.2vw, 1.1rem); display: flex; gap: 10px; align-items: flex-start;
+}
+.insight-icon { font-size: clamp(1rem, 1.5vw, 1.3rem); flex-shrink: 0; margin-top: 1px; }
+.insight-text { font-size: var(--small-size); color: var(--text-secondary); line-height: 1.5; }
+.insight-text strong { color: var(--text-primary); }
+.nav-dots {
+  position: fixed; right: clamp(12px, 2vw, 24px); top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 8px; z-index: 100;
+}
+.nav-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2);
+  cursor: pointer; transition: all 0.3s; border: none; outline: none;
+}
+.nav-dot.active { background: var(--accent); box-shadow: 0 0 8px var(--accent); height: 20px; border-radius: 3px; }
+.nav-dot:hover { background: rgba(255,255,255,0.5); }
+.slide-num {
+  position: absolute; top: 20px; right: 28px; font-size: var(--small-size);
+  color: var(--text-muted); font-weight: 500; z-index: 3;
+}
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.cover-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: clamp(0.8rem, 1.5vw, 1.4rem); }
+.cover-line { width: 32px; height: 2px; background: var(--accent); }
+.cover-date { font-size: var(--small-size); color: var(--accent2); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.cover-title-wrap { margin-bottom: clamp(1rem, 2vw, 2rem); }
+.cover-sub { color: var(--text-secondary); font-size: clamp(0.85rem, 1.6vw, 1.25rem); font-weight: 400; margin-top: 10px; }
+.cover-stats { display: flex; gap: clamp(1rem, 3vw, 3rem); flex-wrap: wrap; margin-top: clamp(1rem, 2.5vw, 2.5rem); }
+.cover-stat-item { text-align: left; }
+.cover-stat-val { font-size: clamp(1.4rem, 3vw, 2.8rem); font-weight: 800; color: var(--text-primary); }
+.cover-stat-label { font-size: var(--small-size); color: var(--text-muted); margin-top: 2px; }
+.cover-divider { width: 1px; background: var(--border); align-self: stretch; }
+.cover-visual {
+  position: absolute; right: clamp(1rem, 5vw, 5rem); top: 50%; transform: translateY(-50%);
+  display: flex; align-items: center; justify-content: center;
+}
+.cover-ring {
+  width: clamp(180px, 25vw, 340px); height: clamp(180px, 25vw, 340px);
+  border-radius: 50%; position: relative; border: 1px solid rgba(59,130,246,0.15);
+  animation: float 5s ease-in-out infinite;
+}
+.cover-ring::before { content: ''; position: absolute; inset: 16px; border-radius: 50%; border: 1px solid rgba(6,182,212,0.15); }
+.cover-ring::after {
+  content: ''; position: absolute; inset: 32px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 60%);
+}
+.cover-ring-num {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; z-index: 2;
+}
+.cover-ring-big { font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 800; color: var(--text-primary); line-height: 1; }
+.cover-ring-label { font-size: var(--small-size); color: var(--text-secondary); margin-top: 4px; }
+.ending-main { font-size: clamp(2rem, 6vw, 5.5rem); font-weight: 800; line-height: 1; }
+.ending-sub { font-size: clamp(0.85rem, 1.5vw, 1.2rem); color: var(--text-secondary); margin-top: 12px; }
+.ending-bottom {
+  position: absolute; bottom: clamp(1.5rem, 3vw, 2.5rem); left: var(--slide-padding); right: var(--slide-padding);
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+.ending-info { font-size: var(--small-size); color: var(--text-muted); }
+@media (max-height: 700px) {
+  :root { --slide-padding: clamp(0.8rem, 2.5vw, 2rem); --content-gap: clamp(0.4rem, 1vw, 0.8rem); --title-size: clamp(1.2rem, 4vw, 2.5rem); --h2-size: clamp(1rem, 2.5vw, 1.8rem); }
+  .kpi-value { font-size: clamp(1.1rem, 2vw, 1.8rem); }
+  .chart-wrap { max-height: min(24vh, 180px); }
+  .chart-wrap canvas { max-height: min(24vh, 180px) !important; }
+}
+@media (max-height: 600px) {
+  :root { --slide-padding: clamp(0.5rem, 2vw, 1.2rem); --title-size: clamp(1rem, 3.5vw, 2rem); --body-size: clamp(0.65rem, 1vw, 0.85rem); }
+  .nav-dots, .slide-num, .glow-orb { display: none; }
+  .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+  .chart-wrap { max-height: min(20vh, 150px); }
+  .chart-wrap canvas { max-height: min(20vh, 150px) !important; }
+}
+@media (max-width: 600px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .two-col, .summary-grid { grid-template-columns: 1fr; }
+  .three-col { grid-template-columns: 1fr; }
+  .cover-visual { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+}
+</style>
+</head>
+<body>
+<!-- ============================
+     SLIDE 1: 封面
+     ============================ -->
+<section class="slide" id="slide-1">
+  <div class="grid-bg"></div>
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+  <span class="slide-num">01 / 11</span>
+  <div class="slide-content">
+    <div class="cover-eyebrow reveal">
+      <div class="cover-line"></div>
+      <span class="cover-date">2026.04.30 · 阶段性报告</span>
+    </div>
+    <div class="cover-title-wrap reveal reveal-delay-1">
+      <h1>AI转型 · 人力管理<br><span class="gradient-text">目标达成情况</span></h1>
+      <p class="cover-sub">光典 & 追溯云 · 优化进度 · 成本分析 · AI场景落地</p>
+    </div>
+    <div class="cover-stats reveal reveal-delay-2">
+      <div class="cover-stat-item">
+        <div class="cover-stat-val" style="background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">449</div>
+        <div class="cover-stat-label">期初总人数</div>
+      </div>
+      <div class="cover-divider"></div>
+      <div class="cover-stat-item">
+        <div class="cover-stat-val" style="background:linear-gradient(135deg,#10b981,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">367</div>
+        <div class="cover-stat-label">截止4.30在岗</div>
+      </div>
+      <div class="cover-divider"></div>
+      <div class="cover-stat-item">
+        <div class="cover-stat-val" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">1336万</div>
+        <div class="cover-stat-label">预计全年节省</div>
+      </div>
+      <div class="cover-divider"></div>
+      <div class="cover-stat-item">
+        <div class="cover-stat-val" style="background:linear-gradient(135deg,#ef4444,#f87171);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">82</div>
+        <div class="cover-stat-label">已完成优化人数</div>
+      </div>
+    </div>
+  </div>
+  <div class="cover-visual">
+    <div class="cover-ring reveal reveal-delay-3">
+      <div class="cover-ring-num">
+        <div class="cover-ring-big" style="background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">83%</div>
+        <div class="cover-ring-label">目标完成率</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     SLIDE 2: 核心KPI指标
+     ============================ -->
+<section class="slide" id="slide-2">
+  <div class="grid-bg"></div>
+  <div class="glow-orb glow-orb-1" style="opacity:0.5"></div>
+  <span class="slide-num">02 / 11</span>
+  <div class="slide-content">
+    <div class="section-header reveal">
+      <div class="section-num">02</div>
+      <h2>核心KPI指标</h2>
+      <div class="section-line"></div>
+      <span class="badge badge-blue">截止 2026.04.30</span>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card reveal reveal-delay-1" style="--kpi-color:#3b82f6">
+        <div class="kpi-icon">👥</div>
+        <div class="kpi-label">期初总人数</div>
+        <div class="kpi-value">449</div>
+        <div class="kpi-sub">光典372 + 追溯云77</div>
+      </div>
+      <div class="kpi-card reveal reveal-delay-1" style="--kpi-color:#10b981">
+        <div class="kpi-icon">✅</div>
+        <div class="kpi-label">4.30在岗总人数</div>
+        <div class="kpi-value">367</div>
+        <div class="kpi-sub">光典301 + 追溯云66</div>
+      </div>
+      <div class="kpi-card reveal reveal-delay-1" style="--kpi-color:#ef4444">
+        <div class="kpi-icon">📉</div>
+        <div class="kpi-label">已完成优化</div>
+        <div class="kpi-value">82</div>
+        <div class="kpi-sub kpi-green">↓ 较期初减少18.3%</div>
+      </div>
+      <div class="kpi-card reveal reveal-delay-2" style="--kpi-color:#f59e0b">
+        <div class="kpi-icon">🎯</div>
+        <div class="kpi-label">半年目标完成率</div>
+        <div class="kpi-value">83%</div>
+        <div class="kpi-sub">目标99人，已完成82人</div>
+      </div>
+      <div class="kpi-card reveal reveal-delay-2" style="--kpi-color:#06b6d4">
+        <div class="kpi-icon">💰</div>
+        <div class="kpi-label">全年预计节省</div>
+        <div class="kpi-value" style="font-size:clamp(1.1rem,2.2vw,1.9rem)">1336万</div>
+        <div class="kpi-sub">半年节省438万</div>
+      </div>
+      <div class="kpi-card reveal reveal-delay-2" style="--kpi-color:#a855f7">
+        <div class="kpi-icon">🤖</div>
+        <div class="kpi-label">AI项目落地</div>
+        <div class="kpi-value">3</div>
+        <div class="kpi-sub">1个已上线，2个推进中</div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============================
+     SLIDE 3: 整体优化进度
+     ============================ -->
+<section class="slide" id="slide-3">
+  <div class="grid-bg"></div>
+  <div class="glow-orb glow-orb-2" style="opacity:0.5"></div>
+  <span class="slide-num">03 / 11</span>
+  <div class="slide-content">
+    <div class="section-header reveal">
+      <div class="section-num">03</div>
+      <h2>整体优化进度总览</h2>
+      <div class="section-line"></div>
+      <span class="badge badge-cyan">月度进度</span>
+    </div>
+    <div class="two-col">
+      <div class="glass-card reveal reveal-delay-1" style="padding:clamp(0.8rem,1.5vw,1.4rem)">
+        <div style="margin-bottom:10px">
+          <h3 style="color:var(--text-secondary);font-size:var(--small-size);text-transform:uppercase;letter-spacing:0.05em">月度优化明细</h3>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>部门</th><th>期初</th><th>1月</th><th>2月</th><th>3月</th><th>4月</th><th>新增</th><th>在岗</th></tr></thead>
+          <tbody>
+            <tr><td class="highlight">光典</td><td>372</td><td>12</td><td>9</td><td>6</td><td class="highlight">44</td><td>0</td><td class="green">301</td></tr>
+            <tr><td class="highlight">追溯云</td><td>77</td><td>1</td><td>9</td><td>0</td><td>2</td><td>1</td><td class="green">66</td></tr>
+            <tr class="total-row"><td>合计</td><td>449</td><td>13</td><td>18</td><td>6</td><td class="highlight">46</td><td>1</td><td class="green">367</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:14px">
+          <div style="font-size:var(--small-size);color:var(--text-muted);margin-bottom:8px">各月优化占比</div>
+          <div class="progress-row"><span class="progress-label">1月</span><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:15.8%;background:linear-gradient(90deg,#3b82f6,#60a5fa)"></div></div><span class="progress-val">13人</span></div>
+          <div class="progress-row"><span class="progress-label">2月</span><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:21.9%;background:linear-gradient(90deg,#06b6d4,#22d3ee)"></div></div><span class="progress-val">18人</span></div>
+          <div class="progress-row"><span class="progress-label">3月</span><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:7.3%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div></div><span class="progress-val">6人</span></div>
+          <div class="progress-row"><span class="progress-label">4月</span><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:56%;background:linear-gradient(90deg,#10b981,#34d399)"></div></div><span class="progress-val">46人</span></div>
+        </div>
+      </div>
+      <div class="glass-card reveal reveal-delay-2" style="padding:clamp(0.8rem,1.5vw,1.4rem);display:flex;flex-direction:column;gap:10px">
+        <h3 style="color:var(--text-secondary);font-size:var(--small-size);text-transform:uppercase;letter-spacing:0.05em">月度离职人数趋势</h3>
+        <div class="chart-wrap"><canvas id="monthlyChart"></canvas></div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <div style="text-align:center"><div style="font-size:clamp(1rem,2vw,1.6rem);font-weight:800;color:#3b82f6">46</div><div style="font-size:var(--small-size);color:var(--text-muted)">4月峰值</div></div>
+          <div style="width:1px;background:var(--border)"></div>
+          <div style="text-align:center"><div style="font-size:clamp(1rem,2vw,1.6rem);font-weight:800;color:#10b981">83</div><div style="font-size:var(--small-size);color:var(--text-muted)">完成进度</div></div>
+          <div style="width:1px;background:var(--border)"></div>
+          <div style="text-align:center"><div style="font-size:clamp(1rem,2vw,1.6rem);font-weight:800;color:#f59e0b">11</div><div style="font-size:var(--small-size);color:var(--text-muted)">司法专项</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     SLIDE 4: 光典岗位详情
+     ============================ -->
+<section class="slide" id="slide-4">
+  <div class="grid-bg"></div>
+  <div class="glow-orb glow-orb-3" style="opacity:0.5"></div>
+  <span class="slide-num">04 / 11</span>
+  <div class="slide-content">
+    <div class="section-header reveal">
+      <div class="section-num">04</div>
+      <h2>光典 · 岗位类别优化详情</h2>
+      <div class="section-line"></div>
+      <span class="badge badge-amber">期初372人 → 在岗301人</span>
+    </div>
+    <div class="two-col">
+      <div class="glass-card reveal reveal-delay-1" style="padding:clamp(0.8rem,1.5vw,1.4rem)">
+        <div style="margin-bottom:10px">
+          <h3 style="color:var(--text-secondary);font-size:var(--small-size);text-transform:uppercase;letter-spacing:0.05em">按岗位类别</h3>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>岗位类别</th><th>期初</th><th>1月</th><th>2月</th><th>3月</th><th>4月</th><th>期末</th><th>离职率</th></tr></thead>
+          <tbody>
+            <tr><td class="highlight">销售类</td><td>38</td><td>4</td><td>-</td><td>8</td><td>-</td><td class="green">26</td><td class="highlight">31.6%</td></tr>
+            <tr><td class="highlight">生产类</td><td>262</td><td>6</td><td>7</td><td>5</td><td>34</td><td class="green">210</td><td>19.8%</td></tr>
+            <tr><td class="highlight">研发类</td><td>45</td><td>1</td><td>2</td><td>1</td><td>1</td><td class="green">40</td><td>11.1%</td></tr>
+            <tr><td class="highlight">职能类</td><td>27</td><td>1</td><td>1</td><td>-</td><td>-</td><td class="green">25</td><td>7.4%</td></tr>
+            <tr class="total-row"><td>总计</td><td>372</td><td>12</td><td>9</td><td>6</td><td>44</td><td class="green">301</td><td>19.1%</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px;padding:8px 12px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;font-size:var(--small-size);color:#fbbf24">
+          📌 司法11人4/30处理，6月30日完成剩余，人数至290
+        </div>
+      </div>
+      <div class="glass-card reveal reveal-delay-2" style="padding:clamp(0.8rem,1.5vw,1.4rem);display:flex;flex-direction:column;gap:10px">
+        <h3 style="color:var(--text-secondary);font-size:var(--small-size);text-transform:uppercase;letter-spacing:0.05em">各岗位优化人数构成</h3>
+        <div class="chart-wrap"><canvas id="deptChart"></canvas></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+          <span class="badge badge-amber">生产类占比最大 74%</span>
+          <span class="badge badge-blue">销售类离职率最高 31.6%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     SLIDE 5: 追溯云优化详情
+     ============================ -->
+<section class="slide" id="slide-5">
+  <div class="grid-bg"></div>
+  <div class="glow-orb glow-orb-1" style="opacity:0.4"></div>
+  <span class="slide-num">05 / 11</span>
+  <div class="slide-content">
+    <div class="section-header reveal">
+      <div class="section-num">05</div>
+      <h2>追溯云 · 岗位优化详情</h2>
+      <div class="section-line"></div>
+      <span class="badge badge-cyan">期初77人 → 在岗66人</span>
+    </div>
+    <div class="two-col">
+      <div class="glass-card reveal reveal-delay-1" style="padding:clamp(0.8rem,1.5vw,1.4rem)">
+        <div style="margin-bottom:10px">
+          <h3 style="color:var(--text-secondary);font-size:var(--small-size);text-transform:uppercase;letter-spacing:0.05em">按岗位类别</h3>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>岗位类别</th><th>期初</th><th>1月</th><th>2月</th><th>3月</th><th>4月</th><th>期末</th><th>离职率</th></tr></thead>
+          <tbody>
+            <tr><td class="highlight">销售类</td><td>15</td><td>1</td><td>1</td><td>-</td><td>-</td><td class="green">13</td><td>13.3%</td></tr>
+            <tr><td class="highlight">生产类</td><td>39</td><td>-</td><td>7</td><td>-</td><td>2</td><td class="green">30</td><td>23.1%</td></tr>
+            <tr><td class="highlight">研发类</td><td>12</td><td>-</td><td>1</td><td>-</td><td>-</td><td class="green">11</td><td>8.3%</td></tr>
+            <tr><td class="highlight">职能类</td><td>11</td><td>-</td><td>-</td><td>-</td><td>1</td><td>12</td><td>0%</td></tr>
+            <tr class="total-row"><td>总计</td><td>77</td><td>1</td><td>9</td><td>0</td><td>2</td><td class="green">66</td><td>15.6%</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px;padding:8px 12px;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);border-radius:8px;font-size:var(--small-size);color:#22d3ee">
+          📌 5月1日转光典5人，2季度待完成4人，6月30日在岗62人
+        </div>
+      </div>
+      <div class="glass-card reveal reveal-delay-2" style="padding:clamp(0.8rem,1.5vw,1.4rem);display:flex;flex-direction:column;gap:10px">
+        <h3 style="color:var(--text-secondary);font-size:var(--small-size);text-transform:uppercase;letter-spacing:0.05em">各岗位优化人数构成</h3>
+        <div class="chart-wrap"><canvas id="zsyChart"></canvas></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+          <span class="badge badge-cyan">生产类占优化主体</span>
+          <span class="badge badge-green">整体离职率15.6%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============================
+     SLIDE 6: 成本分析 + ROI
+     ============================ -->
+<section class="slide" id="slide-6">
+  <div class="grid-bg"></div>
+  <div class="glow-orb glow-orb-2" style="opacity:0.4"></div>
+  <span class="slide-num">06 / 11</span>
+  <div class="slide-content">
+    <div class="section-header reveal">
+      <div class="section-num">06</div>
+      <h2>人力成本变化分析</h2>
+      <div class="section-line"></div>
+      <span class="badge badge-amber">全年/半年节省 · 补偿金 · ROI</span>
+    </div>
+
+    <!-- 里程碑成本卡片 -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(0.6rem,1.2vw,1rem);margin-bottom:clamp(0.8rem,1.5vw,1.2rem)" class="reveal reveal-delay-1">
+      <!-- 4.30 -->
+      <div class="cost-card" style="--c-color:#3b82f6">
+        <div class="cost-milestone">📍 2026.04.30（当前）</div>
+        <div class="cost-big" style="background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent">1336万</div>
+        <div class="cost-unit">全年预计节省</div>
+        <div class="cost-sub-row">
+          <div class="cost-sub-item"><div class="cost-sub-val">438万</div><div class="cost-sub-label">半年节省</div></div>
+          <div style="width:1px;background:var(--border)"></div>
+          <div class="cost-sub-item"><div class="cost-sub-val" style="color:#f87171">645万</div><div class="cost-sub-label">补偿金</div></div>
+        </div>
+        <div class="roi-inline">
+          <div class="roi-item">
+            <div class="roi-item-label">净收益（全年节省－补偿金）</div>
+            <div class="roi-item-val">691万</div>
+          </div>
+          <div class="roi-item">
+            <div class="roi-item-label">ROI</div>
+            <div class="roi-item-val">2.1</div>
+          </div>
+        </div>
+      </div>
+      <!-- 6.30 -->
+      <div class="cost-card" style="--c-color:#10b981">
+        <div class="cost-milestone">🎯 2026.06.30（预计）</div>
+        <div class="cost-big" style="background:linear-gradient(135deg,#10b981,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent">1482万</div>
+        <div class="cost-unit">全年预计节省</div>
+        <div class="cost-sub-row">
+          <div class="cost-sub-item"><div class="cost-sub-val">444万</div><div class="cost-sub-label">半年节省</div></div>
+          <div style="width:1px;background:var(--border)"></div>
+          <div class="cost-sub-item"><div class="cost-sub-val" style="color:#f87171">743万</div><div class="cost-sub-label">补偿金</div></div>
+        </div>
+        <div class="roi-inline">
+          <div class="roi-item">
+            <div class="roi-item-label">净收益（全年节省－补偿金）</div>
+            <div class="roi-item-val">739万</div>
+          </div>
+          <div class="roi-item">
+            <div class="roi-item-label">ROI</div>
+            <div class="roi-item-val">2.0</div>
+          </div>
+        </div>
+      </div>
+      <!-- 9.30 -->
+      <div class="cost-card" style="--c-color:#a855f7">
+        <div class="cost-milestone">⚡ 2026.09.30（如启动二期）</div>
+        <div class="cost-big" style="background:linear-gradient(135deg,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent">1668万</div>
+        <div class="cost-unit">全年预计节省</div>
+        <div class="cost-sub-row">
+          <div class="cost-sub-item"><div class="cost-sub-val" style="color:#c084fc">—</div><div class="cost-sub-label">半年节省</div></div>
+          <div style="width:1px;background:var(--border)"></div>
+          <div class="cost-sub-item"><div class="cost-sub-val" style="color:#f87171">917万</div><div class="cost-sub-label">补偿金</div></div>
+        </div>
+        <div class="roi-inline">
+          <div class="roi-item">
+            <div class="roi-item-label">净收益（全年节省－补偿金）</div>
+            <div class="roi-item-val">751万</div>
+          </div>
+          <div class="roi-item">
+            <div class="roi-item-label">ROI</div>
+            <div class="roi-item-val">1.8</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 成本图表 -->
+    <div class="glass-card reveal reveal-delay-2" style="padding:clamp(0.8rem,1.5vw,1.4rem)">
+      <h3 style="color:var(--text-secondary);font-size:var(--small-size);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">各阶段成本对比（万元）</h3>
+      <div class="chart-wrap" style="max-height:min(22vh,170px)">
+        <canvas id="costChart" style="max-height:min(22vh,170px)!important"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     SLIDE 7: 年龄结构分析（按岗位）
+     ============================ -->
+<section class="slide" id="slide-7">
+  <div class="grid-bg"></div>
+  <div class="glow-orb glow-orb-3" style="opacity:0.4"></div>
+  <span class="slide-num">07 / 11</span>
+  <div class="slide-content">
+    <div class="section-header reveal">
+      <div class="section-num">07</div>
+      <h2>年龄结构分析 · 按岗位</h2>
+      <div class="section-line"></div>
+      <span class="badge badge-amber">截止 4.30 在岗</span>
+    </div>
+    <div class="two-col">
+      <div class="glass-card reveal reveal-delay-1" style="padding:clamp(0.6rem,1.2vw,1rem);display:flex;flex-direction:column;gap:8px">
+        <h3 style="color:var(--text-secondary);font-size:var(--small-size);text-transform:uppercase;letter-spacing:0.05em">光典 · 各岗位平均年龄</h3>
+        <div class="chart-wrap" style="max-height:min(22vh,170px)">
+          <canvas id="ageChartGD"></canvas>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px">
+          <span class="badge badge-red">⚠️ 职能类偏高 40.53岁</span>
+          <span class="badge badge-green">✅ 生产类最优 34.86岁</span>
+        </div>
+      </div>
+      <div class="glass-card reveal reveal-delay-2" style="padding:clamp(0.6rem,1.2vw,1rem);display:flex;flex-direction:column;gap:8px">
+        <h3 style="color:var(--text-secondary);font-size:var(--small-size);text-transform:uppercase;letter-spacing:0.05em">追溯云 · 各岗位平均年龄</h3>
+        <div class="chart-wrap" style="max-height:min(22vh,170px)">
+          <canvas id="ageChartZSY"></canvas>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px">
+          <span class="badge badge-red">⚠️ 职能类偏高 42.59岁</span>
+          <span class="badge badge-green">✅ 生产类最优 35.35岁</span>
+        </div>
+      </div>
+    </div>
+    <!-- 年龄分析洞察 -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:clamp(0.4rem,0.8vw,0.6rem)" class="reveal reveal-delay-3">
+      <span class="badge badge-blue">📊 光典整体平均年龄 36岁，生产和研发均偏大，创新不足</span>
+      <span class="badge badge-cyan">📊 追溯云整体平均年龄 37岁，生产和研发均偏大，激情不够</span>
+      <span class="badge badge-red">⚠️ 追溯云销售年龄37相对优于光典40，但整体年龄偏大、活力不足</span>
+    </div>
+  </div>
+</section>
+<!-- ============================
+     SLIDE 8: 期末人员占比分析（新增）
+     ============================ -->
+<section class="slide" id="slide-8">
+  <div class="grid-bg"></div>
+  <div class="glow-orb glow-orb-1" style="opacity:0.4"></div>
+  <span class="slide-num">08 / 11</span>
+  <div class="slide-content">
+    <div class="section-header reveal">
+      <div class="section-num">08</div>
+      <h2>期末人员占比分析</h2>
+      <div class="section-line"></div>
+      <span class="badge badge-purple">截止 4.30 在岗</span>
+    </div>
+
+    <div class="two-col">
+      <!-- 左：光典 -->
+      <div class="glass-card reveal reveal-delay-1" style="padding:clamp(0.6rem,1.2vw,1rem);display:flex;flex-direction:column;gap:8px">
+        <h3 style="color:var(--text-secondary);font-size:var(--small-size);text-transform:uppercase;letter-spacing:0.05em">光典 · 期末岗位占比</h3>
+        <div class="chart-wrap" style="max-height:min(24vh,190px)">
+          <canvas id="ratioChartGD"></canvas>
+        </div>
+        <table class="data-table" style="font-size:11px">
+          <thead><tr><th>岗位</th><th>人数</th><th>占比</th></tr></thead>
+          <tbody>
+            <tr><td class="highlight">生产类</td><td>210</td><td class="highlight">69.8%</td></tr>
+            <tr><td class="highlight">研发类</td><td>40</td><td>13.3%</td></tr>
+            <tr><td class="highlight">销售类</td><td>26</td><td>8.6%</td></tr>
+            <tr><td class="highlight">职能类</td><td>25</td><td>8.3%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- 右：追溯云 -->
+      <div class="glass-card reveal reveal-delay-2" style="padding:clamp(0.6rem,1.2vw,1rem);display:flex;flex-direction:column;gap:8px">
+        <h3 style="color:var(--text-secondary);font-size:var(--small-size);text-transform:uppercase;letter-spacing:0.05em">追溯云 · 期末岗位占比</h3>
+        <div class="chart-wrap" style="max-height:min(24vh,190px)">
+          <canvas id="ratioChartZSY"></canvas>
+        </div>
+        <table class="data-table" style="font-size:11px">
+          <thead><tr><th>岗位</th><th>人数</th><th>占比</th></tr></thead>
+          <tbody>
+            <tr><td class="highlight">生产类</td><td>30</td><td class="highlight">45.5%</td></tr>
+            <tr><td class="highlight">职能类</td><td>12</td><td>18.2%</td></tr>
+            <tr><td class="highlight">研发类</td><td>11</td><td>16.7%</td></tr>
+            <tr><td class="highlight">销售类</td><td>13</td><td>19.7%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- 占比分析洞察 -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:clamp(0.4rem,0.8vw,0.6rem)" class="reveal reveal-delay-3">
+      <span class="badge badge-blue">光典：生产类占70%，说明主营毛利不高，急需提质（生产效率）</span>
+      <span class="badge badge-cyan">追溯云：生产类占46%，说明主营毛利较高，急需提量（业务拓展）</span>
+      <span class="badge badge-amber">⚠️ 两公司职能类占比不均衡，凸显横向赋能的必要性</span>
+    </div>
+  </div>
+</section>
+<!-- ============================
+     SLIDE 9: AI场景落地
+     ============================ -->
+<section class="slide" id="slide-9">
+  <div class="grid-bg"></div>
+  <div class="glow-orb glow-orb-1" style="opacity:0.5"></div>
+  <span class="slide-num">09 / 11</span>
+  <div class="slide-content">
+    <div class="section-header reveal">
+      <div class="section-num">09</div>
+      <h2>AI场景落地情况</h2>
+      <div class="section-line"></div>
+      <span class="badge badge-green">3个项目</span>
+    </div>
+
+    <div class="three-col reveal reveal-delay-1">
+      <!-- 项目1 -->
+      <div class="glass-card" style="border-color:rgba(16,185,129,0.3);padding:clamp(0.8rem,1.5vw,1.4rem);display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:clamp(2rem,4vw,3.5rem);font-weight:800;color:rgba(255,255,255,0.04);position:absolute;right:14px;top:10px;line-height:1">01</div>
+        <div style="font-size:clamp(1.2rem,2vw,1.8rem)">🤖</div>
+        <div style="font-size:clamp(0.75rem,1.2vw,1rem);font-weight:700;color:var(--text-primary);line-height:1.3">企业知识库<br>AI解答机器人</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;font-size:var(--small-size);font-weight:600;padding:3px 10px;border-radius:20px;width:fit-content;background:rgba(16,185,129,0.12);color:#34d399;border:1px solid rgba(16,185,129,0.3);">✅ 已上线运营</div>
+        <div style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5">企业制度与内部知识库员工咨询AI解答。已完成测试并部署在光典新企业微信中。</div>
+        <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:8px;font-size:var(--small-size);color:#34d399">
+          登录路径：光典企业微信 → 通讯录 → 智能机器人 → 公司制度问答助手
+        </div>
+      </div>
+
+      <!-- 项目2 -->
+      <div class="glass-card" style="border-color:rgba(245,158,11,0.3);padding:clamp(0.8rem,1.5vw,1.4rem);display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:clamp(2rem,4vw,3.5rem);font-weight:800;color:rgba(255,255,255,0.04);position:absolute;right:14px;top:10px;line-height:1">02</div>
+        <div style="font-size:clamp(1.2rem,2vw,1.8rem)">📊</div>
+        <div style="font-size:clamp(0.75rem,1.2vw,1rem);font-weight:700;color:var(--text-primary);line-height:1.3">绩效考核评分<br>AI机器人系统</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;font-size:var(--small-size);font-weight:600;padding:3px 10px;border-radius:20px;width:fit-content;background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.3);">🔄 推进中</div>
+        <div style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5">人力资源绩效考核评分AI机器人系统。已于4月29日与肖总完成首次沟通。</div>
+        <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:8px;font-size:var(--small-size);color:#fbbf24">
+          待5月泛微新OA绩效模块测试后，研究数据抓取方向
+        </div>
+      </div>
+
+      <!-- 项目3 -->
+      <div class="glass-card" style="border-color:rgba(59,130,246,0.3);padding:clamp(0.8rem,1.5vw,1.4rem);display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:clamp(2rem,4vw,3.5rem);font-weight:800;color:rgba(255,255,255,0.04);position:absolute;right:14px;top:10px;line-height:1">03</div>
+        <div style="font-size:clamp(1.2rem,2vw,1.8rem)">🔍</div>
+        <div style="font-size:clamp(0.75rem,1.2vw,1rem);font-weight:700;color:var(--text-primary);line-height:1.3">招聘简历智能匹配<br>AI数字员工</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;font-size:var(--small-size);font-weight:600;padding:3px 10px;border-radius:20px;width:fit-content;background:rgba(59,130,246,0.12);color:#60a5fa;border:1px solid rgba(59,130,246,0.3);">🔄 推进中</div>
+        <div style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5">招聘简历智能搜索 + 需求精准匹配 + 市场适配性分析AI数字员工。</div>
+        <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:8px;padding:8px;font-size:var(--small-size);color:#60a5fa">
+          已于4月29日与肖总沟通，后续分配账号进行测试
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     SLIDE 10: 关键洞察与风险
+     ============================ -->
+<section class="slide" id="slide-10">
+  <div class="grid-bg"></div>
+  <div class="glow-orb glow-orb-2" style="opacity:0.4"></div>
+  <span class="slide-num">10 / 11</span>
+  <div class="slide-content">
+    <div class="section-header reveal">
+      <div class="section-num">10</div>
+      <h2>关键洞察与后续规划</h2>
+      <div class="section-line"></div>
+      <span class="badge badge-red">风险提示</span>
+    </div>
+
+    <div class="two-col">
+      <!-- 左：已完成成果 -->
+      <div class="reveal reveal-delay-1">
+        <div style="font-size:var(--small-size);font-weight:700;color:#34d399;text-transform:uppercase;letter-spacing:0.05em;display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span style="width:10px;height:10px;border-radius:50%;background:#34d399;display:inline-block"></span>
+          阶段成果
+        </div>
+        <div class="insight-card" style="margin-bottom:8px">
+          <div style="font-size:clamp(1rem,1.5vw,1.3rem);flex-shrink:0;margin-top:1px">📈</div>
+          <div style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5">截止4.30，<strong style="color:var(--text-primary)">整体在岗367人</strong>，完成优化82人，占全年目标83%，整体进度良好</div>
+        </div>
+        <div class="insight-card" style="margin-bottom:8px">
+          <div style="font-size:clamp(1rem,1.5vw,1.3rem);flex-shrink:0;margin-top:1px">💰</div>
+          <div style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5">全年预计节省人力成本<strong style="color:var(--text-primary)">1336万元</strong>，半年可节省438万元，净收益可观</div>
+        </div>
+        <div class="insight-card" style="margin-bottom:8px">
+          <div style="font-size:clamp(1rem,1.5vw,1.3rem);flex-shrink:0;margin-top:1px">🤖</div>
+          <div style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5"><strong style="color:var(--text-primary)">AI知识库机器人</strong>已成功落地光典企业微信，AI转型初见成效</div>
+        </div>
+        <div class="insight-card">
+          <div style="font-size:clamp(1rem,1.5vw,1.3rem);flex-shrink:0;margin-top:1px">📉</div>
+          <div style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5">光典<strong style="color:var(--text-primary)">销售类离职率31.6%</strong>最高，生产类减员占优化总量74%，结构优化成效显著</div>
+        </div>
+      </div>
+
+      <!-- 右：风险与下一步 -->
+      <div class="reveal reveal-delay-2">
+        <div style="font-size:var(--small-size);font-weight:700;color:#f87171;text-transform:uppercase;letter-spacing:0.05em;display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span style="width:10px;height:10px;border-radius:50%;background:#f87171;display:inline-block"></span>
+          风险与下一步
+        </div>
+        <div class="insight-card" style="margin-bottom:8px;border-color:rgba(239,68,68,0.2)">
+          <div style="font-size:clamp(1rem,1.5vw,1.3rem);flex-shrink:0;margin-top:1px">⚠️</div>
+          <div style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5"><strong style="color:var(--text-primary)">司法专项11人</strong>需在4.30前处理，6月30日前完成剩余，存在法律合规风险</div>
+        </div>
+        <div class="insight-card" style="margin-bottom:8px;border-color:rgba(239,68,68,0.2)">
+          <div style="font-size:clamp(1rem,1.5vw,1.3rem);flex-shrink:0;margin-top:1px">🔄</div>
+          <div style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5">6月30日待完成优化<strong style="color:var(--text-primary)">14人</strong>（光典11人+追溯云3人），需持续跟进推进</div>
+        </div>
+        <div class="insight-card" style="margin-bottom:8px;border-color:rgba(245,158,11,0.2)">
+          <div style="font-size:clamp(1rem,1.5vw,1.3rem);flex-shrink:0;margin-top:1px">📋</div>
+          <div style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5">如半年报<strong style="color:var(--text-primary)">未扭亏为盈</strong>，需启动第二轮22人减员，全年节省可提升至1668万元</div>
+        </div>
+        <div class="insight-card" style="border-color:rgba(59,130,246,0.2)">
+          <div style="font-size:clamp(1rem,1.5vw,1.3rem);flex-shrink:0;margin-top:1px">🔬</div>
+          <div style="font-size:var(--small-size);color:var(--text-secondary);line-height:1.5">绩效AI系统和招聘AI系统需加速推进，<strong style="color:var(--text-primary)">5月OA系统测试</strong>是关键节点</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============================
+     SLIDE 11: 结束页
+     ============================ -->
+<section class="slide" id="slide-11">
+  <div class="grid-bg"></div>
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+  <div class="glow-orb glow-orb-3"></div>
+  <span class="slide-num">11 / 11</span>
+
+  <div class="slide-content" style="justify-content:center;align-items:flex-start;padding-top:clamp(2rem,8vh,6rem)">
+    <div class="reveal">
+      <div class="cover-eyebrow" style="margin-bottom:clamp(1rem,2vw,1.8rem)">
+        <div class="cover-line"></div>
+        <span class="cover-date">AI转型升级行动 · 持续推进中</span>
+      </div>
+      <div class="ending-main gradient-text">降本增效<br>AI赋能</div>
+      <div class="ending-sub">光典 & 追溯云 · 人力资源优化 · 2026年度目标</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(0.8rem,1.5vw,1.2rem);margin-top:clamp(1.5rem,3vw,2.5rem);width:100%;max-width:min(90vw,800px)" class="reveal reveal-delay-2">
+      <div style="background:var(--bg-card);border:1px solid var(--border-light);border-radius:12px;padding:clamp(0.8rem,1.5vw,1.2rem);text-align:center">
+        <div style="font-size:clamp(1.2rem,2.5vw,2rem);font-weight:800;background:linear-gradient(135deg,#3b82f6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent">82人</div>
+        <div style="font-size:var(--small-size);color:var(--text-muted);margin-top:4px">已完成优化</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border-light);border-radius:12px;padding:clamp(0.8rem,1.5vw,1.2rem);text-align:center">
+        <div style="font-size:clamp(1.2rem,2.5vw,2rem);font-weight:800;background:linear-gradient(135deg,#10b981,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent">1336万</div>
+        <div style="font-size:var(--small-size);color:var(--text-muted);margin-top:4px">全年节省成本</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border-light);border-radius:12px;padding:clamp(0.8rem,1.5vw,1.2rem);text-align:center">
+        <div style="font-size:clamp(1.2rem,2.5vw,2rem);font-weight:800;background:linear-gradient(135deg,#f59e0b,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent">3项目</div>
+        <div style="font-size:var(--small-size);color:var(--text-muted);margin-top:4px">AI场景落地</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ending-bottom">
+    <div class="ending-info">光典 & 追溯云 · HR管理团队</div>
+    <div class="ending-info">2026年04月30日</div>
+  </div>
+</section>
+<!-- ============================
+     NAVIGATION DOTS
+     ============================ -->
+<nav class="nav-dots" aria-label="幻灯片导航">
+  <button class="nav-dot active" data-slide="0" title="封面"></button>
+  <button class="nav-dot" data-slide="1" title="核心KPI"></button>
+  <button class="nav-dot" data-slide="2" title="整体进度"></button>
+  <button class="nav-dot" data-slide="3" title="光典详情"></button>
+  <button class="nav-dot" data-slide="4" title="追溯云详情"></button>
+  <button class="nav-dot" data-slide="5" title="成本分析"></button>
+  <button class="nav-dot" data-slide="6" title="年龄分析"></button>
+  <button class="nav-dot" data-slide="7" title="期末占比"></button>
+  <button class="nav-dot" data-slide="8" title="AI落地"></button>
+  <button class="nav-dot" data-slide="9" title="关键洞察"></button>
+  <button class="nav-dot" data-slide="10" title="结束"></button>
+</nav>
+
+<script>
+// ===== CHART.JS CONFIG =====
+Chart.defaults.color = "#94a3b8";
+Chart.defaults.font.family = "'Manrope', 'Noto Sans SC', sans-serif";
+Chart.defaults.font.size = 11;
+
+const commonOptions = {
+  responsive: true,
+  maintainAspectRatio: true,
+  plugins: {
+    legend: { position: "bottom", labels: { padding: 10, boxWidth: 10, font: { size: 10 } } },
+    tooltip: { backgroundColor: "#0d1726", borderColor: "rgba(59,130,246,0.4)", borderWidth: 1 }
+  }
+};
+
+// 月度离职趋势
+new Chart(document.getElementById("monthlyChart"), {
+  type: "bar",
+  data: {
+    labels: ["1月", "2月", "3月", "4月"],
+    datasets: [
+      { label: "光典", data: [12, 9, 6, 44], backgroundColor: "rgba(59,130,246,0.7)", borderColor: "#3b82f6", borderWidth: 1, borderRadius: 5 },
+      { label: "追溯云", data: [1, 9, 0, 2], backgroundColor: "rgba(6,182,212,0.7)", borderColor: "#06b6d4", borderWidth: 1, borderRadius: 5 }
+    ]
+  },
+  options: {
+    ...commonOptions,
+    scales: {
+      x: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#64748b" } },
+      y: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#64748b", stepSize: 10 } }
+    }
+  }
+});
+
+// 光典岗位构成
+new Chart(document.getElementById("deptChart"), {
+  type: "doughnut",
+  data: {
+    labels: ["生产类", "研发类", "职能类", "销售类"],
+    datasets: [{ data: [52, 5, 2, 12], backgroundColor: ["rgba(59,130,246,0.8)", "rgba(6,182,212,0.8)", "rgba(16,185,129,0.8)", "rgba(245,158,11,0.8)"], borderColor: ["#3b82f6", "#06b6d4", "#10b981", "#f59e0b"], borderWidth: 1, hoverOffset: 4 }]
+  },
+  options: { ...commonOptions, cutout: "65%", plugins: { ...commonOptions.plugins, legend: { position: "right", labels: { padding: 8, boxWidth: 10, font: { size: 10 } } } } }
+});
+
+// 追溯云岗位构成
+new Chart(document.getElementById("zsyChart"), {
+  type: "doughnut",
+  data: {
+    labels: ["生产类", "销售类", "研发类", "职能类"],
+    datasets: [{ data: [9, 2, 1, 1], backgroundColor: ["rgba(6,182,212,0.8)", "rgba(59,130,246,0.8)", "rgba(16,185,129,0.8)", "rgba(245,158,11,0.8)"], borderColor: ["#06b6d4", "#3b82f6", "#10b981", "#f59e0b"], borderWidth: 1, hoverOffset: 4 }]
+  },
+  options: { ...commonOptions, cutout: "65%", plugins: { ...commonOptions.plugins, legend: { position: "right", labels: { padding: 8, boxWidth: 10, font: { size: 10 } } } } }
+});
+
+// 成本对比图
+new Chart(document.getElementById("costChart"), {
+  type: "bar",
+  data: {
+    labels: ["4.30现状", "6.30预计", "9.30二期"],
+    datasets: [
+      { label: "全年节省", data: [1336, 1482, 1668], backgroundColor: "rgba(59,130,246,0.7)", borderColor: "#3b82f6", borderWidth: 1, borderRadius: 5 },
+      { label: "半年节省", data: [438, 444, 0], backgroundColor: "rgba(16,185,129,0.7)", borderColor: "#10b981", borderWidth: 1, borderRadius: 5 },
+      { label: "补偿金", data: [645, 743, 917], backgroundColor: "rgba(239,68,68,0.7)", borderColor: "#ef4444", borderWidth: 1, borderRadius: 5 }
+    ]
+  },
+  options: {
+    ...commonOptions,
+    scales: {
+      x: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#64748b" } },
+      y: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#64748b", callback: v => v + "万" } }
+    }
+  }
+});
+
+// 光典各岗位平均年龄（按岗位年龄分析）
+new Chart(document.getElementById("ageChartGD"), {
+  type: "bar",
+  data: {
+    labels: ["销售类", "生产类", "研发类", "职能类"],
+    datasets: [{
+      label: "平均年龄（岁）",
+      data: [39.61, 34.86, 36.96, 40.53],
+      backgroundColor: ["rgba(245,158,11,0.7)", "rgba(16,185,129,0.7)", "rgba(59,130,246,0.7)", "rgba(239,68,68,0.7)"],
+      borderColor: ["#f59e0b", "#10b981", "#3b82f6", "#ef4444"],
+      borderWidth: 1, borderRadius: 5
+    }]
+  },
+  options: {
+    ...commonOptions,
+    scales: {
+      x: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#64748b" } },
+      y: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#64748b" }, min: 30, max: 45 }
+    }
+  }
+});
+
+// 追溯云各岗位平均年龄
+new Chart(document.getElementById("ageChartZSY"), {
+  type: "bar",
+  data: {
+    labels: ["销售类", "生产类", "研发类", "职能类"],
+    datasets: [{
+      label: "平均年龄（岁）",
+      data: [36.68, 35.35, 37.44, 42.59],
+      backgroundColor: ["rgba(245,158,11,0.7)", "rgba(16,185,129,0.7)", "rgba(59,130,246,0.7)", "rgba(239,68,68,0.7)"],
+      borderColor: ["#f59e0b", "#10b981", "#3b82f6", "#ef4444"],
+      borderWidth: 1, borderRadius: 5
+    }]
+  },
+  options: {
+    ...commonOptions,
+    scales: {
+      x: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#64748b" } },
+      y: { grid: { color: "rgba(255,255,255,0.04)" }, ticks: { color: "#64748b" }, min: 30, max: 45 }
+    }
+  }
+});
+
+// 光典期末岗位占比（新增页）
+new Chart(document.getElementById("ratioChartGD"), {
+  type: "doughnut",
+  data: {
+    labels: ["生产类", "研发类", "销售类", "职能类"],
+    datasets: [{ data: [69.8, 13.3, 8.6, 8.3], backgroundColor: ["rgba(59,130,246,0.8)", "rgba(6,182,212,0.8)", "rgba(245,158,11,0.8)", "rgba(16,185,129,0.8)"], borderColor: ["#3b82f6", "#06b6d4", "#f59e0b", "#10b981"], borderWidth: 1, hoverOffset: 4 }]
+  },
+  options: { ...commonOptions, cutout: "60%", plugins: { ...commonOptions.plugins, legend: { position: "right", labels: { padding: 8, boxWidth: 10, font: { size: 10 } } } } }
+});
+
+// 追溯云期末岗位占比
+new Chart(document.getElementById("ratioChartZSY"), {
+  type: "doughnut",
+  data: {
+    labels: ["生产类", "销售类", "研发类", "职能类"],
+    datasets: [{ data: [45.5, 19.7, 16.7, 18.2], backgroundColor: ["rgba(6,182,212,0.8)", "rgba(245,158,11,0.8)", "rgba(59,130,246,0.8)", "rgba(16,185,129,0.8)"], borderColor: ["#06b6d4", "#f59e0b", "#3b82f6", "#10b981"], borderWidth: 1, hoverOffset: 4 }]
+  },
+  options: { ...commonOptions, cutout: "60%", plugins: { ...commonOptions.plugins, legend: { position: "right", labels: { padding: 8, boxWidth: 10, font: { size: 10 } } } } }
+});
+
+// ===== SLIDE NAVIGATION =====
+const slides = document.querySelectorAll(".slide");
+const dots = document.querySelectorAll(".nav-dot");
+let currentSlide = 0;
+
+function goToSlide(n) {
+  if (n < 0) n = 0;
+  if (n >= slides.length) n = slides.length - 1;
+  currentSlide = n;
+  slides[n].scrollIntoView({ behavior: "smooth" });
+  dots.forEach((d, i) => d.classList.toggle("active", i === n));
+}
+
+dots.forEach((dot, i) => {
+  dot.addEventListener("click", () => goToSlide(i));
+});
+
+// Keyboard navigation
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowDown" || e.key === "ArrowRight" || e.key === " ") {
+    e.preventDefault(); goToSlide(currentSlide + 1);
+  } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+    e.preventDefault(); goToSlide(currentSlide - 1);
+  }
+});
+
+// Touch/swipe
+let touchStart = 0;
+document.addEventListener("touchstart", e => { touchStart = e.touches[0].clientY; });
+document.addEventListener("touchend", e => {
+  const dy = touchStart - e.changedTouches[0].clientY;
+  if (Math.abs(dy) > 50) goToSlide(currentSlide + (dy > 0 ? 1 : -1));
+});
+
+// Mouse wheel
+let wheelTimer = null;
+document.addEventListener("wheel", e => {
+  if (wheelTimer) return;
+  wheelTimer = setTimeout(() => { wheelTimer = null; }, 600);
+  goToSlide(currentSlide + (e.deltaY > 0 ? 1 : -1));
+}, { passive: true });
+
+// Intersection Observer for reveal animations + dot sync
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll(".reveal").forEach(el => el.classList.add("visible"));
+      const idx = Array.from(slides).indexOf(entry.target);
+      if (idx >= 0) {
+        currentSlide = idx;
+        dots.forEach((d, i) => d.classList.toggle("active", i === idx));
+      }
+    }
+  });
+}, { threshold: 0.5 });
+
+slides.forEach(s => observer.observe(s));
+
+// Initial reveal
+setTimeout(() => {
+  document.querySelector("#slide-1").querySelectorAll(".reveal").forEach(el => el.classList.add("visible"));
+}, 300);
+</script>
+</body>
+</html>
